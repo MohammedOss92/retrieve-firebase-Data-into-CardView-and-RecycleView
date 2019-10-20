@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "133004094676",
+    "firebase_url": "https://my-fire-ef845.firebaseio.com",
+    "project_id": "my-fire-ef845",
+    "storage_bucket": "my-fire-ef845.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:133004094676:android:292951bb14934331301f41",
+        "android_client_info": {
+          "package_name": "com.f.s"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "133004094676-jgkjjq4te66fe5935434i85f8fq2eu22.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZrie8PJjgkL6lUc34PYikegzl3KEtZz4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "133004094676-jgkjjq4te66fe5935434i85f8fq2eu22.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
