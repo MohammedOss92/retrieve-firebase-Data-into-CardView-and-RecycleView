@@ -1,19 +1,24 @@
 package com.f.s;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +53,25 @@ DatabaseReference mDatabase;
         mBlogList.setAdapter(firebaseRecyclerAdapter);
     }
 
+    private void firebaseSearch(String searchText){
+        Query firebaseSearchQuery = mDatabase.orderByChild("title").startAt(searchText).endAt(searchText + "\uf0ff");
+        FirebaseRecyclerAdapter<Blog,BlogViewHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Blog, BlogViewHolder>(
+                        Blog.class,
+                        R.layout.blog_row,
+                        BlogViewHolder.class,
+                        firebaseSearchQuery
+                ) {
+                    @Override
+                    protected void populateViewHolder(BlogViewHolder blogViewHolder, Blog blog, int i) {
+                        blogViewHolder.setTitle(blog.getTitle());
+                        blogViewHolder.setDesc(blog.getDesc());
+                        blogViewHolder.setImage(getApplicationContext(),blog.getImage());
+                    }
+                };
+        mBlogList.setAdapter(firebaseRecyclerAdapter);
+    }
+
     public static class BlogViewHolder extends RecyclerView.ViewHolder{
         View mView;
 
@@ -72,5 +96,36 @@ DatabaseReference mDatabase;
         }
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        SearchView searchView=(SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                firebaseSearch(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                firebaseSearch(newText);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id==R.id.action_search){
+            //TODO
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
