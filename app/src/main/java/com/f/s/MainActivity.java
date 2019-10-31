@@ -96,7 +96,8 @@ DatabaseReference mDatabase;
     }
 
     private void firebaseSearch(String searchText){
-        Query firebaseSearchQuery = mDatabase.orderByChild("title").startAt(searchText).endAt(searchText + "\uf0ff");
+        String aa=searchText.toLowerCase();
+        Query firebaseSearchQuery = mDatabase.orderByChild("title").startAt(aa).endAt(aa + "\uf0ff");
         FirebaseRecyclerAdapter<Blog,BlogViewHolder> firebaseRecyclerAdapter =
                 new FirebaseRecyclerAdapter<Blog, BlogViewHolder>(
                         Blog.class,
