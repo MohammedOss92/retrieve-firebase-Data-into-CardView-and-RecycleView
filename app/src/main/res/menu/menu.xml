@@ -10,8 +10,8 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/action_setting"
-        android:title="setting"
-        />
+        android:id="@+id/action_sort"
+        android:title="Sort"
+        app:showAsAction="never"/>
 
 </menu>

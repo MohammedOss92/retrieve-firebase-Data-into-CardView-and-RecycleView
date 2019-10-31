@@ -1,7 +1,9 @@
 package com.f.s;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,6 +17,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +32,8 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 
 public class MainActivity extends AppCompatActivity {
+    LinearLayoutManager mLayoutManager;
+    SharedPreferences mSharedPreferences;
 FirebaseDatabase ds;
 RecyclerView mBlogList;
 DatabaseReference mDatabase;
@@ -40,9 +45,26 @@ DatabaseReference mDatabase;
         mDatabase = FirebaseDatabase.getInstance().getReference().child("global");
         mDatabase.keepSynced(true);
 
+        mSharedPreferences=getSharedPreferences("SortSettings",MODE_PRIVATE);
+        String mSorting = mSharedPreferences.getString("Sort","newest");
+        if(mSorting.equals("newest")){
+            mLayoutManager = new LinearLayoutManager(this);
+            mLayoutManager.setReverseLayout(true);
+            mLayoutManager.setStackFromEnd(true);
+        }
+
+        else if(mSorting.equals("oldest")){
+            mLayoutManager = new LinearLayoutManager(this);
+            mLayoutManager.setReverseLayout(false);
+            mLayoutManager.setStackFromEnd(false);
+        }
+
+
         mBlogList=(RecyclerView)findViewById(R.id.myrecyclerview);
         mBlogList.setHasFixedSize(true);
-        mBlogList.setLayoutManager(new LinearLayoutManager(this));
+        mBlogList.setLayoutManager(mLayoutManager);
+
+
 
     }
 
@@ -228,6 +250,38 @@ DatabaseReference mDatabase;
             //TODO
             return true;
         }
+
+        else if(id==R.id.action_sort){
+            ShowSortDialog();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void ShowSortDialog() {
+        String [] SortOptions = {"Newest","Oldest"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sort by")
+                .setIcon(R.drawable.ic_action_sort)
+                .setItems(SortOptions, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which==0){
+                            SharedPreferences.Editor editor = mSharedPreferences.edit();
+                            editor.putString("Sort","newest");
+                            editor.apply();
+                            recreate();
+                        }
+
+                        else if(which==1){{
+                            SharedPreferences.Editor editor = mSharedPreferences.edit();
+                            editor.putString("Sort","oldest");
+                            editor.apply();
+                            recreate();
+                        }
+
+                        }
+                    }
+                });
+        builder.show();
     }
 }
